@@ -1,0 +1,43 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mlplatform-ingress
+  namespace: mlplatform
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/proxy-body-size: "1000m"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: model-registry.info
+      http:
+        paths:
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: model-registry
+                port:
+                  number: 8080
+    - host: inference-server.info
+      http:
+        paths:
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: inference-server
+                port:
+                  number: 8080
+    - host: grafana.info
+      http:
+        paths:
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana
+                port:
+                  number: 3000                  
+#192.168.49.2 inference-server.info
+# curl --resolve "inference-server.info:80:192.168.49.2" -i http://inference-server.info

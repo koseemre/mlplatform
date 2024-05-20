@@ -1,0 +1,13 @@
+# docker-compose.yml
+version: '3.1' #format version for this docker compose file
+services:
+  mongo-container:
+    image: mongo:latest
+    environment:
+        - MONGO_INITDB_ROOT_USERNAME=root
+        - MONGO_INITDB_ROOT_PASSWORD=1234
+    ports:
+      - "27017:27017"
+    command: mongod
+    volumes:
+      - /$HOME/data/mongo-data:/data/db

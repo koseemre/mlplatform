@@ -1,0 +1,8 @@
+scripts/*
+inference-server/.DS_Store
+*.pyc
+inference-server/utils/.DS_Store
+model-registry/.DS_Store
+.DS_Store
+/.vscode
+inference-server/.env.dev

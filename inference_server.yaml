@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: inference-server
+ namespace: mlplatform
+spec:
+ selector:
+   matchLabels:
+     run: inference-server
+ replicas: 1
+ template:
+   metadata:
+     labels:
+       run: inference-server
+   spec:
+     containers:
+     - name: inference-server
+       image: inference-server:latest
+       imagePullPolicy: Never
+       env:
+        - name: MODEL_REGISTRY_HOST
+          value: model-registry
+        - name: MODEL_REGISTRY_PORT
+          value: "8080"
+        - name: MODEL_FILES_PATH
+          value: model-files
+        - name: LOG_FILE_PATH
+          value: logs
+        - name: DEPLOYMENT
+          value: TEST
+        - name: CAN_START_EMPTY
+          value: "True"
+       ports:
+       - containerPort: 8080
+       volumeMounts:
+         - name: registry-volume
+           mountPath: /usr/src/app/model-files
+         - name: log-volume
+           mountPath: /usr/src/app/logs
+     volumes:
+      - name: registry-volume
+        hostPath:
+          path: /data/model-files
+          type: DirectoryOrCreate
+      - name: log-volume
+        hostPath:
+          path: /data/logs
+          type: DirectoryOrCreate   

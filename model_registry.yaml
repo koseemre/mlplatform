@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: model-registry
+ namespace: mlplatform
+spec:
+ selector:
+   matchLabels:
+     run: model-registry
+ replicas: 1
+ template:
+   metadata:
+     labels:
+       run: model-registry
+   spec:
+     containers:
+     - name: model-registry
+       image: model-registry:latest
+       imagePullPolicy: Never
+       ports:
+       - containerPort: 8080
+       env:
+        - name: MONGO_DB_HOST
+          value: host.minikube.internal
+        - name: MONGO_DB_PORT
+          value: "27017"
+        - name: MONGO_DB_NAME
+          value: model-registry
+        - name: MONGO_DB_USER
+          value: root
+        - name: MONGO_DB_PASSWORD
+          value: "1234"
+        - name: MODEL_FILES_PATH
+          value: model-files
+        - name: LOG_FILE_PATH
+          value: logs
+        - name: DEPLOYMENT
+          value: TEST
+       volumeMounts:
+         - name: registry-volume
+           mountPath: /usr/src/app/model-files
+         - name: log-volume
+           mountPath: /usr/src/app/logs     
+     volumes:
+      - name: registry-volume
+        hostPath:
+          path: /data/model-files
+          type: DirectoryOrCreate
+      - name: log-volume
+        hostPath:
+          path: /data/logs
+          type: DirectoryOrCreate
